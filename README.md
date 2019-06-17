@@ -19,8 +19,8 @@ cd ~
 wget https://github.com/firstboot/rein/blob/master/release/linux/rein
 wget https://github.com/firstboot/rein/blob/master/release/linux/rein.json
 chmod +x rein
--- modify your conf
--- nano rein.conf
+# modify your conf
+# nano rein.conf
 ./rein
 ```
 
