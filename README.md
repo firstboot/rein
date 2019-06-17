@@ -14,7 +14,8 @@ It is useful when operating virtual servers, dockers, firewalls and the like.  I
 
 ```shell
 cd ~
-wget https://github.com/firstboot/rein/blob/master/release/linux/rein
+wget http://note.youdao.com/yws/public/resource/b1e1ad270ba1b1af97ebdf3e2c8b7403/xmlnote/69076F11A30A4EC187F0CEF52B6BD93D/27071 -O rein.zip
+unzip rein.zip
 chmod +x rein
 ./rein -e > rein.json
 # modify rein.json for you
@@ -23,11 +24,13 @@ chmod +x rein
 
 #### 1.2 Windows
 
-- download 2 files
+- download  file
 
-  https://github.com/firstboot/rein/blob/master/release/windows/rein.zip
+  https://note.youdao.com/ynoteshare1/index.html?id=b1e1ad270ba1b1af97ebdf3e2c8b7403&type=note
 
-- decompress `rein.zip`
+  `rein-amd64-windows.zip`
+
+- decompress `rein-amd64-windows.zip`
 
 - generating and modifying conf `rein.json` 
 
