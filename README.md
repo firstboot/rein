@@ -16,7 +16,7 @@ release download: https://note.youdao.com/ynoteshare1/index.html?id=b1e1ad270ba1
 
 ```shell
 cd ~
-wget http://note.youdao.com/yws/public/resource/b1e1ad270ba1b1af97ebdf3e2c8b7403/xmlnote/69076F11A30A4EC187F0CEF52B6BD93D/27071 -O rein.zip
+wget http://note.youdao.com/yws/public/resource/b1e1ad270ba1b1af97ebdf3e2c8b7403/xmlnote/82E2CC3FF2744238B6AF36346298E5E5/27082 -O rein.zip
 unzip rein.zip
 chmod +x rein
 ./rein -e > rein.json
