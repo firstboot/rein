@@ -2,7 +2,7 @@
 
 ![rein](https://raw.githubusercontent.com/firstboot/rein/master/rein-logo.png)
 
-**This program is used to efficiently redirect connections from one IP address/port combination to another. **
+* This program is used to efficiently redirect connections from one IP address/port combination to another. 
 
 
 
