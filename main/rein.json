@@ -1,5 +1,8 @@
 {
     "upstream": [
-        {"source": "0.0.0.0:8150", "target": "127.0.0.1:22"}
+        {"source": "0.0.0.0:8150", "target": "127.0.0.1:9991"}
+    ],
+    "fileshare": [
+        {"port": "9991", "path": "E:/go_workspace"}
     ]
 }

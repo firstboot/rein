@@ -10,7 +10,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net"
+	"net/http"
 	"os"
 	"strconv"
 	"strings"
@@ -164,27 +166,89 @@ func getConf(confPath string) map[string]interface{} {
 
 }
 
+func isExistKeyOfMap(key string, confMap map[string]interface{}) bool {
+	for confKey, _ := range confMap {
+		if confKey == key {
+			return true
+		}
+	}
+	return false
+}
+
+func runFileShare(port string, sharePath string) {
+	http.Handle("/", http.FileServer(http.Dir(sharePath)))
+	log.Fatal(http.ListenAndServe(":"+port, nil))
+}
+
 func main() {
 	//go proxyServer("0.0.0.0:8888", "10.40.11.231:8081")
 	//var confMap map[string]interface{}
 
 	// eg: rein.json
-	/*
-		{
-		    "conf": [
-		        {"source": "0.0.0.0:8888", "target": "10.20.17.213:1111"}
-		    ]
-		}
-	*/
+	exampleStr := `
+{
+	"upstream": [
+		{"source": "0.0.0.0:8150", "target": "127.0.0.1:9991"}
+	],
+	"fileshare": [
+		{"port": "9991", "path": "."}
+	]
+}`
 
-	confMap := getConf("rein.json")
-	for k, v := range confMap["upstream"].([]interface{}) {
-		// fmt.Println(k, v.(map[string]interface{})["source"], v.(map[string]interface{})["target"])
-		fmt.Println(k, v)
-		source := v.(map[string]interface{})["source"].(string)
-		target := v.(map[string]interface{})["target"].(string)
-		fmt.Println(source, target)
-		go proxyServer(source, target)
+	if len(os.Args) > 1 {
+		if os.Args[1] == "-v" {
+			fmt.Println("version: rein 1.0.2")
+			return
+		}
+
+		if os.Args[1] == "-h" {
+			helpStr := `-h: help(detail see: https://github.com/firstboot/rein)
+-v: version
+-c: conf(eg: rein -c rein.json)
+-e: conf example`
+			fmt.Println(helpStr)
+			return
+		}
+
+		if os.Args[1] == "-e" {
+			fmt.Println(exampleStr)
+			return
+		}
+
+		if os.Args[1] == "-c" {
+			confPath := os.Args[2]
+			confMap := getConf(confPath)
+
+			if isExistKeyOfMap("fileshare", confMap) == true {
+				for k, v := range confMap["fileshare"].([]interface{}) {
+					// fmt.Println(k, v.(map[string]interface{})["source"], v.(map[string]interface{})["target"])
+					fmt.Println(k, v)
+					port := v.(map[string]interface{})["port"].(string)
+					path := v.(map[string]interface{})["path"].(string)
+					fmt.Println(port, path)
+					go runFileShare(port, path)
+				}
+			}
+
+			if isExistKeyOfMap("upstream", confMap) == true {
+				for k, v := range confMap["upstream"].([]interface{}) {
+					// fmt.Println(k, v.(map[string]interface{})["source"], v.(map[string]interface{})["target"])
+					fmt.Println(k, v)
+					source := v.(map[string]interface{})["source"].(string)
+					target := v.(map[string]interface{})["target"].(string)
+					fmt.Println(source, target)
+					go proxyServer(source, target)
+				}
+			}
+		}
+
+	} else {
+		infoStr := `author:  lz
+e-mail:  linzhanggeorge@gmail.com
+index:   https://github.com/firstboot/rein
+help:    -h`
+		fmt.Println(infoStr)
+		return
 	}
 
 	for {
