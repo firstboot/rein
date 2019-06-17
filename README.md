@@ -12,6 +12,8 @@ It is useful when operating virtual servers, dockers, firewalls and the like.  I
 
 #### 1.1 CentOS/RHEL/Ubuntu
 
+release download: https://note.youdao.com/ynoteshare1/index.html?id=b1e1ad270ba1b1af97ebdf3e2c8b7403&type=note
+
 ```shell
 cd ~
 wget http://note.youdao.com/yws/public/resource/b1e1ad270ba1b1af97ebdf3e2c8b7403/xmlnote/69076F11A30A4EC187F0CEF52B6BD93D/27071 -O rein.zip
