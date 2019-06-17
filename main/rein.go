@@ -2,8 +2,8 @@ package main
 
 /*
 rein
-2019-6-17 10:44:46
-@lz
+date: 2019-6-17
+author: lz
 */
 
 import (
@@ -97,8 +97,6 @@ func consumerDeal(orgiConn net.Conn, clientConn *net.TCPConn, channel <-chan cha
 
 func communicationDeal(orgiConn net.Conn, bufferLen int, destServerAddr string) {
 	clientConn := getClientConn(destServerAddr)
-	// clientConn := getClientConn("10.40.11.231:22")
-	// clientConn := getClientConn("127.0.0.1:28080")
 
 	channel := make(chan chanEle)
 	go orgiConnReadProducter(orgiConn, bufferLen, channel)
@@ -134,7 +132,7 @@ func isTail(buffer []byte, len int) bool {
 
 func proxyServer(sourceAddr string, targetAddr string) {
 	destServerAddr := targetAddr
-	fmt.Println("mirror-proxy start ...")
+	fmt.Println("rein server start ...")
 	fmt.Println("net.Listen ...")
 	netListen, err := net.Listen("tcp", sourceAddr)
 	if err != nil {
@@ -181,7 +179,6 @@ func runFileShare(port string, sharePath string) {
 }
 
 func main() {
-	//go proxyServer("0.0.0.0:8888", "10.40.11.231:8081")
 	//var confMap map[string]interface{}
 
 	// eg: rein.json
