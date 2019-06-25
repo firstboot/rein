@@ -10,7 +10,7 @@ type appInfoObj struct {
 func appInfo() appInfoObj {
 
 	const exampleInfo = `{
-		"stream": [
+		"upstream": [
 			{"source": "0.0.0.0:8150", "target": "127.0.0.1:9991"}
 		],
 		"fileshare": [
