@@ -126,9 +126,10 @@ eg:
 
 ```shell
 cd ~
-wget http://note.youdao.com/yws/public/resource/b1e1ad270ba1b1af97ebdf3e2c8b7403/xmlnote/82E2CC3FF2744238B6AF36346298E5E5/27082 -O rein.zip
+wget http://note.youdao.com/yws/public/resource/b1e1ad270ba1b1af97ebdf3e2c8b7403/xmlnote/0AD1EF713B9A428D86631C7282A1B04F/27232 -O rein.zip
 # 需要安装 unzip 
 unzip rein.zip
+mv rein-*-linux rein
 chmod +x rein
 ./rein -e > rein.json
 # modify rein.json for you
@@ -146,6 +147,7 @@ chmod +x rein
 ```powershell
 # generate default conf 'rein.json'
 # 使用 cmd 时
+ren rein-1.0.3-amd64-win.exe rein.exe
 ./rein.exe -e > rein.json
 
 # 使用 powershell 时
