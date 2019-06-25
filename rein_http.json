@@ -1,0 +1,17 @@
+{
+	"http": [
+		{
+			"source": "0.0.0.0:8150", 
+			"locations": [
+				{
+					"root":"/hadoop", 
+					"target": "hadoop.apache.org:80"
+				},
+				{
+					"root":"/erlang", 
+					"target": "www.erlang.org:80"
+				}
+			]
+		}
+	]
+}
