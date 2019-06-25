@@ -18,6 +18,7 @@ release download: https://note.youdao.com/ynoteshare1/index.html?id=b1e1ad270ba1
 cd ~
 wget http://note.youdao.com/yws/public/resource/b1e1ad270ba1b1af97ebdf3e2c8b7403/xmlnote/82E2CC3FF2744238B6AF36346298E5E5/27082 -O rein.zip
 unzip rein.zip
+mv rein-*-linux rein
 chmod +x rein
 ./rein -e > rein.json
 # modify rein.json for you
@@ -37,6 +38,9 @@ chmod +x rein
 - generating and modifying conf `rein.json` 
 
   ```powershell
+  # unzip package, and rename
+  ren rein-1.0.3-amd64-win.exe rein.exe
+  
   # generate default conf 'rein.json'
   # windows cmd 
   ./rein.exe -e > rein.json
@@ -145,9 +149,11 @@ chmod +x rein
 使用下面的命令生成并修改 `rein.json` 配置文件
 
 ```powershell
+# 解压后先改名
+ren rein-1.0.3-amd64-win.exe rein.exe
+
 # generate default conf 'rein.json'
 # 使用 cmd 时
-ren rein-1.0.3-amd64-win.exe rein.exe
 ./rein.exe -e > rein.json
 
 # 使用 powershell 时
