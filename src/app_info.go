@@ -18,7 +18,7 @@ func appInfo() appInfoObj {
 		]
 }`
 
-	const versionInfo = `version: rein 1.0.3`
+	const versionInfo = `version: rein 1.0.4`
 
 	const helpInfo = `-h: help(detail see: https://github.com/firstboot/rein)
 -v: version

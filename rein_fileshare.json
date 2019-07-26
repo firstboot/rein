@@ -1,5 +1,6 @@
 {
 	"fileshare": [
-		{"port": "9991", "path": "."}
+		{"port": "9991", "path": "."},
+		{"port": "9992", "path": "/home/"}
 	]
 }

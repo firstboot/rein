@@ -7,6 +7,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
 // channel element struct
@@ -45,7 +46,8 @@ func (obj coroutineHTTPObj) acceptDeal(netListen net.Listener) {
 		conn, err := netListen.Accept()
 		if err != nil {
 			log.Println("rein http proxy netListen.Accept error!")
-			os.Exit(1)
+			// os.Exit(1)
+			return
 		}
 		log.Println("rein http proxy netListen.Accept ok!, conn id: ", fmt.Sprintf("%0x", &conn))
 		go obj.communicationDeal(conn, obj.bufferLen)
@@ -211,6 +213,14 @@ func (obj coroutineHTTPObj) run(sourceAddr string) {
 		log.Println("rein http proxy net.Listen error!")
 		os.Exit(1)
 	}
-	log.Println("rein http proxy net.Listen ok")
-	obj.acceptDeal(netListen)
+	log.Println("rein http proxy net.Listen ready...")
+	go obj.acceptDeal(netListen)
+	log.Println("rein http proxy net.Listen start...")
+
+	for {
+		time.Sleep(time.Second * 1)
+		if mainRunFlag == false {
+			netListen.Close()
+		}
+	}
 }

@@ -7,14 +7,34 @@ author: lz
 */
 
 import (
+	"log"
 	"os"
+	"sync"
 	"time"
 )
 
-func main() {
-	commandDeal().parse(os.Args)
+var mainWg sync.WaitGroup
+var mainRunFlag bool
 
+func main() {
 	for {
-		time.Sleep(time.Second * 1)
+		mainRunFlag = true
+		startAll()
+		log.Println("reload rein...")
 	}
+
+}
+
+func startAll() {
+	mainWg.Add(1)
+	commandDeal().parse(os.Args)
+	log.Println("start rein...")
+	mainWg.Wait()
+}
+
+func shutdownAll() {
+	mainRunFlag = false
+	time.Sleep(time.Second * 3)
+	defer mainWg.Done()
+	log.Println("shutdown all rein...")
 }

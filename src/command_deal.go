@@ -2,14 +2,18 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 )
 
+var commandDealConfPath = ""
+
 type commandDealObj struct {
+	sysServPort string
 }
 
 func commandDeal() commandDealObj {
-	return commandDealObj{}
+	return commandDealObj{"19090"}
 }
 
 func (obj commandDealObj) parse(args []string) {
@@ -38,6 +42,7 @@ func (obj commandDealObj) parse(args []string) {
 
 	if args[1] == "-c" {
 		confPath := args[2]
+		commandDealConfPath = confPath
 		confMap := utilsConf().getConf(confPath)
 		obj.confInnerDeal(confMap)
 		return
@@ -57,6 +62,21 @@ func (obj commandDealObj) confInnerDeal(confMap map[string]interface{}) {
 	if utilsConf().isExistKeyOfMap("http", confMap) == true {
 		obj.modelHTTPDeal(confMap)
 	}
+
+	if utilsConf().isExistKeyOfMap("system", confMap) == true {
+		obj.systemConfDeal(confMap)
+	}
+}
+
+func (obj commandDealObj) systemConfDeal(confMap map[string]interface{}) {
+	systemMap := confMap["system"]
+	port := systemMap.(map[string]interface{})["port"].(string)
+	obj.sysServPort = port
+	username := systemMap.(map[string]interface{})["username"].(string)
+	password := systemMap.(map[string]interface{})["password"].(string)
+	log.Println(port, username, password)
+	go httpServer(port, username, password).run()
+
 }
 
 func (obj commandDealObj) modelFileShareDeal(confMap map[string]interface{}) {
