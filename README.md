@@ -190,7 +190,7 @@ eg:
 
 ```shell
 cd ~
-wget http://note.youdao.com/yws/public/resource/b1e1ad270ba1b1af97ebdf3e2c8b7403/xmlnote/82E2CC3FF2744238B6AF36346298E5E5/27082 -O rein.zip
+wget http://note.youdao.com/yws/public/resource/f3c6a039b3a7ccee868fa50601663b44/xmlnote/D46BC1F68A334753AB615B3049D09F39/27313 -O rein.zip
 # 需要安装 unzip 
 unzip rein.zip
 chmod +x rein
