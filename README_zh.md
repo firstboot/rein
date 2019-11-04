@@ -45,7 +45,7 @@
 
 ```shell
 cd ~
-wget 	
+wget \
 http://note.youdao.com/yws/public/resource/e11547282e63ce5920c5c2755a5cd89a/xmlnote/18F3E51677BC41B3B1FE0F6B7DE359F5/27478 -O rein.zip
 unzip rein.zip
 chmod +x rein
