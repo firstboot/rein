@@ -1,278 +1,259 @@
-# rein
+# ![rein](https://note.youdao.com/yws/public/resource/8bd89fcf7e10c7a878881b71865dcae4/xmlnote/E959C106CE854D6D825AD3E77B4AEB9F/27450) rein
 
-![rein](https://raw.githubusercontent.com/firstboot/rein/master/rein-logo.png)
+| [English](https://github.com/firstboot/rein/blob/master/README.md) |  [中文](https://github.com/firstboot/rein/blob/master/README_zh.md) | 
+
+| [Commit Log](https://github.com/firstboot/rein/blob/master/README_commit_log.md) |
+
+#### Introduction
 
 This program is used to efficiently redirect connections from one IP address/port combination to another. 
 
-It is useful when operating virtual servers, dockers, firewalls and the like.  It was developed by golang.
+It is useful when operating virtual servers, dockers, firewalls and so on. 
+
+It creates a tunnel from a public endpoint to a locally running service (version >= 1.0.5). It was developed by golang.
 
 
 
-### Alter tip:
+* `rein` support mode: 
 
-#### 1.0.3
+| mode        | tip                                                          |
+| ----------- | ------------------------------------------------------------ |
+| `upstream`  | It is used to efficiently redirect connections from one IP address/port combination to another. |
+| `fileshare` | local files publishing.                                     |
+| `inps` | It creates a tunnel from a public endpoint to a locally running service. Put `inps` onto your server with public IP. (version >= 1.0.5) |
+| `inpc` | It creates a tunnel from a public endpoint to a locally running service. Put `inpc` onto your server in LAN (that can't be connected from public Internet). (version >= 1.0.5) |
 
-1. rein support `stream` mode.
-2. rein support `fileshare` mode.
 
 
+* `inps` and `inpc`  mode illustration: 
 
-#### 1.0.4
+ ![mode-inps-inc](https://note.youdao.com/yws/public/resource/8bd89fcf7e10c7a878881b71865dcae4/xmlnote/32F23E8C5AF2447BBA7C124547326B17/27445)
 
-1. The `fileshare` mode support multiple path, 1.0.3 only support single path.
 
-   eg:
-
-   ```
-   {
-   	"stream": [
-   		{"source": "0.0.0.0:8150", "target": "127.0.0.1:9991"}
-   	],
-   	"fileshare": [
-   		{"port": "9991", "path": "/home/user/dir1"},
-   		{"port": "9992", "path": "/home/user/dir2"}
-   	]
-   }
-   ```
-
-   
 
 ----
 
 
 
-### 1. Simple deployment 
+### 1. Download by your OS
 
-#### 1.1 CentOS/RHEL/Ubuntu
+All release download: https://note.youdao.com/ynoteshare1/index.html?id=e11547282e63ce5920c5c2755a5cd89a&type=note
 
-release download: https://note.youdao.com/ynoteshare1/index.html?id=b1e1ad270ba1b1af97ebdf3e2c8b7403&type=note
+#### 1.1 Download
+
+* *1.1.1 Download by CentOS/RHEL/Ubuntu*
 
 ```shell
 cd ~
-wget http://note.youdao.com/yws/public/resource/f3c6a039b3a7ccee868fa50601663b44/xmlnote/D46BC1F68A334753AB615B3049D09F39/27313 -O rein.zip
+wget 	
+http://note.youdao.com/yws/public/resource/e11547282e63ce5920c5c2755a5cd89a/xmlnote/18F3E51677BC41B3B1FE0F6B7DE359F5/27478 -O rein.zip
 unzip rein.zip
 chmod +x rein
-./rein -e > rein.json
-# modify rein.json for you
-./rein -c rein.json
 ```
 
-#### 1.2 Windows
 
-- download  file
 
-  https://note.youdao.com/ynoteshare1/index.html?id=b1e1ad270ba1b1af97ebdf3e2c8b7403&type=note
+* *1.1.2  Download by Windows*
 
-  `rein-amd64-windows.zip`
+  * download  file
 
-- decompress `rein-amd64-windows.zip`
+    http://note.youdao.com/yws/public/resource/e11547282e63ce5920c5c2755a5cd89a/xmlnote/63FA93DEBA63475BA3DB18CB3574662B/27486
 
-- generating and modifying conf `rein.json` 
+  * decompress `rein-x.x.x-amd64-windows.zip`
 
-  ```powershell
-  # generate default conf 'rein.json'
-  # windows cmd 
-  ./rein.exe -e > rein.json
+
+
+----
+
+### 2. Simple deployment 
+
+#### 2.1 Specify required functions
+
+* *Which mode do you want to use ?*
+
+| mode        | tip                                                          |
+| ----------- | ------------------------------------------------------------ |
+| `upstream`  | It is used to efficiently redirect connections from one IP address/port combination to another. |
+| `fileshare` | local files publishing.                                      |
+| `inps/inpc` | It creates a tunnel from a public endpoint to a locally running service. (server/client endpoint)  (version >= 1.0.5) |
+
+
+
+#### 2.2 Function mode tip 
+
+*Tip*:  OS description of operating differences, `CentOS/RHEL/Ubuntu` will be used by **default** in subsequent instructions.  *2.2.1* will still introduce them separately.
+
+```shell
+# show all mode, CentOS/RHEL/Ubuntu, eg: upstream
+./rein -e-detail
+./rein -e-detail-upstream
+
+# generate config file, CentOS/RHEL/Ubuntu, eg: upstream
+./rein -e-detail-upstream > rein.json
+
+#####################################################
+
+# show all mode, Windows, eg: upstream
+./rein.exe -e-detail
+./rein.exe -e-detail-upstream
+
+# generate a mode conf file, eg: upstream
+# Windows cmd 
+./rein.exe -e-detail-upstream > rein.json
+
+# Windows powershell, eg: upstream
+./rein.exe -e-detail-upstream | out-file -encoding ascii rein.json
+
+```
+
+
+
+* *2.2.1 How to use mode `upstream`?*
   
-  # windows powershell
-  ./rein.exe -e | out-file -encoding ascii rein.json
-  ```
+  Use `-e-detail-xxx`  option, generate config and running.
+  
+  * *CentOS/RHEL/Ubuntu*
+  
+    * ```shell
+      # show all mode
+      ./rein -e-detail
+      Enter a mode, show specific example, as follow:
+      -e-detail-upstream
+      -e-detail-inps
+      -e-detail-inpc
+      -e-detail-fileshare
+      
+      # generate a mode conf file, eg: upstream
+      ./rein -e-detail-upstream > rein.json
+      
+      # rein.json, modify rein.json for you
+      {
+      	"upstream": [
+      		{"source": "0.0.0.0:8150", "target": "127.0.0.1:9990"}
+      	]
+      }
+      
+      # running
+      ./rein -c rein.json
+      ```
+  
+  * *Windows*
+  
+    * ```powershell
+      # show all mode
+      ./rein.exe -e-detail
+      Enter a mode, show specific example, as follow:
+      -e-detail-upstream
+      -e-detail-inps
+      -e-detail-inpc
+      -e-detail-fileshare
+      
+      # generate a mode conf file, eg: upstream
+      # windows cmd 
+      ./rein.exe -e-detail-upstream > rein.json
+      
+      # windows powershell
+      ./rein.exe -e-detail-upstream | out-file -encoding ascii rein.json
+      
+      # rein.json, modify rein.json for you
+      {
+      	"upstream": [
+      		{"source": "0.0.0.0:8150", "target": "127.0.0.1:9990"}
+      	]
+      }
+      
+    # running
+      ./rein.exe -c rein.json
+      ```
+      
+  
+  
+  
+  
+* *2.2.2 How to use mode `fileshare`?*
 
-  ```json
+  ```shell
+  # show default config
+  ./rein -e-detail-fileshare
   {
-  	"stream": [
-  		{"source": "0.0.0.0:8150", "target": "127.0.0.1:9991"}
-  	],
   	"fileshare": [
-  		{"port": "9991", "path": "."}
+  		{"port": "9990", "path": "."}
   	]
   }
-  ```
-
-- running
-
-  ```powershell
-  ./rein.exe -c rein.json
+  
+  # generate a mode conf file
+  ./rein -e-detail-fileshare > rein.json
+  
+  # rein.json, modify rein.json for you
+  {
+  	"fileshare": [
+  		{"port": "9990", "path": "."}
+  	]
+  }
+  
+  # running
+  ./rein -c rein.json
   ```
 
   
-### 2. Configuration tip
 
-#### 2.1 stream
-
-`stream ` include keywords `source` and `target`. 
-
-  `source`  open port  to listen, `target`  is data stream destination.
-
-eg:
-
-```json
-{
-	"stream": [
-		{"source": "0.0.0.0:8150", "target": "127.0.0.1:9991"}
-	]
-}
-```
-
-#### 2.2 file share
-
-This function looks like `ftp`.
-
-`fileshare` include keywords `port` and `path`.
-
-eg: 
-
-```
-{
-	"fileshare": [
-		{"port": "9991", "path": "/home/lz"}
-	]
-}
-```
-
-
-
-----
-
-`rein` 中文版说明
-
-
-
-本程序主要用于进行反向代理IP地址和端口，功能类似于 `nginx` 的 `stream` 模式和`rinetd` 的功能，由于`rein`使用了`golang`语言开发，并且提供已经编译好的可下载版本，在部署配置方面比它们要方便些。
-
-功能列表：
-
-1. 反向代理`IP`和端口。
-2. 提供本地文件的快速网络（`http`模式）分享。
-
-
-
-### 修改说明:
-
-#### 1.0.3
-
-1. rein 支持 `stream` 模式。
-2. rein 支持`fileshare` 模式。
-
-
-
-#### 1.0.4
-
-1. rein 的 `fileshare` 模式支持多路径分享, 在1.0.3 版本中支持一条路径。
-
-   eg:
-
-   ```
-   {
-   	"stream": [
-   		{"source": "0.0.0.0:8150", "target": "127.0.0.1:9991"}
-   	],
-   	"fileshare": [
-   		{"port": "9991", "path": "/home/user/dir1"},
-   		{"port": "9992", "path": "/home/user/dir2"}
-   	]
-   }
-   ```
-
-   
-
-
-
-### 1. 简单快速部署
-
-#### 1.1 CentOS/RHEL/Ubuntu 平台
-
-已经编译好的版本下载地址： <https://note.youdao.com/ynoteshare1/index.html?id=b1e1ad270ba1b1af97ebdf3e2c8b7403&type=note>
-
-下载 `rein-amd64-linux-x.x.x.zip `
-
-如果您的 Linux 具备公网下载功能，可以直接通过下面的命令进行下载使用：
-
-```shell
-cd ~
-wget http://note.youdao.com/yws/public/resource/f3c6a039b3a7ccee868fa50601663b44/xmlnote/D46BC1F68A334753AB615B3049D09F39/27313 -O rein.zip
-# 需要安装 unzip 
-unzip rein.zip
-chmod +x rein
-./rein -e > rein.json
-# modify rein.json for you
-./rein -c rein.json
-```
-
-#### 1.2 Windows 平台 
-
-使用您的浏览器下载 <https://note.youdao.com/ynoteshare1/index.html?id=b1e1ad270ba1b1af97ebdf3e2c8b7403&type=note> 
-
-`rein-amd64-windows-x.x.x.zip`并解压它。
-
-使用下面的命令生成并修改 `rein.json` 配置文件
-
-```powershell
-# generate default conf 'rein.json'
-# 使用 cmd 时
-./rein.exe -e > rein.json
-
-# 使用 powershell 时
-./rein.exe -e | out-file -encoding ascii rein.json
-```
-
-生成的默认配置文件如下：
-
-```json
-{
-	"upstream": [
-		{"source": "0.0.0.0:8150", "target": "127.0.0.1:9991"}
-	],
-	"fileshare": [
-		{"port": "9991", "path": "."}
-	]
-}
-```
-
-根据您的需要进行修改配置文件后，运行：
-
-```powershell
-./rein.exe -c rein.json
-```
-
-
-
-### 2. 配置文件说明
-
-#### 2.1 stream 模式
-
-`stream` 模式主要由 `source` 和 `target` 构成，实现的功能就是将主机上的某个IP地址与端口，映射到其他的主机（本机）和端口上。在 `stream` 模式下，支持多组由 `source` 和 `target` 构成的映射对。`source` 是监听 IP 和端口，`target`是需要转发到的 IP 和端口。
-
-举例说明：
-
-```json
-{
-	"upstream": [
-		{"source": "0.0.0.0:8150", "target": "127.0.0.1:9991"}
-	]
-}
-```
-
-#### 2.2 file share 模式
-
-此模式类似于`ftp`功能，能快速将本地资源进行网络（`http`方式）发布，它由`port`和`path`构成。`port`是要开放的端口，`path`是本地资源的路径。类似地，这个功能也支持多组。
-
-举例说明：
-
-```json
-{
-	"fileshare": [
-		{"port": "9991", "path": "/home/lz"}
-	]
-}
-```
-
-
-
-
-
-
-
-
-
-
+* *2.2.3 How to use mode `inps/inpc`?*
+
+  If you have a server(A) public IP is `52.74.223.119` ,  and you have a server(B) private IP is `192.168.1.122`.
+
+  Put `inps` onto your server A with public IP. Put `inpc` onto your server B in LAN (that can't be connected from public Internet). 
+
+  *illustration*:
+
+  ![example-inps-inpc](https://note.youdao.com/yws/public/resource/8bd89fcf7e10c7a878881b71865dcae4/xmlnote/877F17E2DC6C478892E82AD9BB29C0B2/27498)
+
+  
+
+  **deploy: inps**
+
+  Put `inps` onto your server A with public IP.
+
+  ```shell
+  # generate a mode conf file
+  ./rein -e-detail-inps > rein.json
+  
+  # rein.json, modify rein.json for you
+  {
+  	"inps": [
+  		{"ctrl": "0.0.0.0:17500"}
+  	]
+  }
+  
+  # running
+  ./rein -c rein.json
+  ```
+
+  
+
+  **deploy: inpc**
+
+  Put `inpc` onto your server B in LAN (that can't be connected from public Internet). 
+
+  ```shell
+  # generate a mode conf file
+  ./rein -e-detail-inpc > rein.json
+  
+  # rein.json, modify rein.json for you
+  # port 17500 is 'inps' server port
+  # port 22 is local host service port, this port is ssh
+  # port 9800 is 'inps' server open port
+  {
+  	"inpc": [
+  		{
+  			"ctrl": "52.74.223.119:17500",
+  			"source": "0.0.0.0:9800",
+  			"target": "127.0.0.1:22"
+  		}
+  	]
+  }
+  
+  # running
+  ./rein -c rein.json
+  ```
+
+  
