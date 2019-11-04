@@ -161,12 +161,10 @@ chmod +x rein
       		{"source": "0.0.0.0:8150", "target": "127.0.0.1:9990"}
       	]
       }
-      
-    # running
+
+      # running
       ./rein.exe -c rein.json
       ```
-      
-  
   
   
   
