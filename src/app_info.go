@@ -15,12 +15,12 @@ type appInfoObj struct {
 func appInfo() appInfoObj {
 
 	const exampleInfo = `{
-		"upstream": [
-			{"source": "0.0.0.0:8150", "target": "127.0.0.1:9991"}
-		],
-		"fileshare": [
-			{"port": "9991", "path": "."}
-		]
+	"upstream": [
+		{"source": "0.0.0.0:8150", "target": "127.0.0.1:9991"}
+	],
+	"fileshare": [
+		{"port": "9991", "path": "."}
+	]
 }`
 
 	const exampleDetailInfo = `Enter a mode, show specific example, as follow:
@@ -30,31 +30,31 @@ func appInfo() appInfoObj {
 -e-detail-fileshare`
 
 	const exampleDetailUpstreamInfo = `{
-		"upstream": [
-			{"source": "0.0.0.0:8150", "target": "127.0.0.1:9990"}
-		]
+	"upstream": [
+		{"source": "0.0.0.0:8150", "target": "127.0.0.1:9990"}
+	]
 }`
 
 	const exampleDetailFileshareInfo = `{
-		"fileshare": [
-			{"port": "9990", "path": "."}
-		]
+	"fileshare": [
+		{"port": "9990", "path": "."}
+	]
 }`
 
 	const exampleDetailInpsInfo = `{
-		"inps": [
-			{"ctrl": "0.0.0.0:17500"}
-		]
+	"inps": [
+		{"ctrl": "0.0.0.0:17500"}
+	]
 }`
 
 	const exampleDetailInpcInfo = `{
-		"inpc": [
-			{
-				"ctrl": "127.0.0.1:17500",
-				"source": "0.0.0.0:9800",
-				"target": "192.168.1.122:22"
-			}
-		]
+	"inpc": [
+		{
+			"ctrl": "127.0.0.1:17500",
+			"source": "0.0.0.0:9800",
+			"target": "192.168.1.122:22"
+		}
+	]
 }`
 
 	const versionInfo = `version: rein 1.0.5`
