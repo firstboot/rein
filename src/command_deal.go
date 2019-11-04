@@ -40,6 +40,36 @@ func (obj commandDealObj) parse(args []string) {
 		os.Exit(0)
 	}
 
+	if args[1] == "-e-detail" {
+		text := appInfo().exampleDetailInfo
+		fmt.Println(text)
+		os.Exit(0)
+	}
+
+	if args[1] == "-e-detail-upstream" {
+		text := appInfo().exampleDetailUpstreamInfo
+		fmt.Println(text)
+		os.Exit(0)
+	}
+
+	if args[1] == "-e-detail-fileshare" {
+		text := appInfo().exampleDetailFileshareInfo
+		fmt.Println(text)
+		os.Exit(0)
+	}
+
+	if args[1] == "-e-detail-inps" {
+		text := appInfo().exampleDetailInpsInfo
+		fmt.Println(text)
+		os.Exit(0)
+	}
+
+	if args[1] == "-e-detail-inpc" {
+		text := appInfo().exampleDetailInpcInfo
+		fmt.Println(text)
+		os.Exit(0)
+	}
+
 	if args[1] == "-c" {
 		confPath := args[2]
 		commandDealConfPath = confPath
@@ -65,6 +95,36 @@ func (obj commandDealObj) confInnerDeal(confMap map[string]interface{}) {
 
 	if utilsConf().isExistKeyOfMap("system", confMap) == true {
 		obj.systemConfDeal(confMap)
+	}
+
+	if utilsConf().isExistKeyOfMap("inps", confMap) == true {
+		obj.modelInpsDeal(confMap)
+	}
+
+	if utilsConf().isExistKeyOfMap("inpc", confMap) == true {
+		obj.modelInpcDeal(confMap)
+	}
+}
+
+func (obj commandDealObj) modelInpsDeal(confMap map[string]interface{}) {
+	for k, v := range confMap["inps"].([]interface{}) {
+		// fmt.Println(k, v.(map[string]interface{})["source"], v.(map[string]interface{})["target"])
+		fmt.Println(k, v)
+		ctrlAddr := v.(map[string]interface{})["ctrl"].(string)
+		fmt.Println(ctrlAddr)
+		go coroutineInps().run(ctrlAddr)
+	}
+}
+
+func (obj commandDealObj) modelInpcDeal(confMap map[string]interface{}) {
+	for k, v := range confMap["inpc"].([]interface{}) {
+		// fmt.Println(k, v.(map[string]interface{})["source"], v.(map[string]interface{})["target"])
+		fmt.Println(k, v)
+		ctrlAddr := v.(map[string]interface{})["ctrl"].(string)
+		source := v.(map[string]interface{})["source"].(string)
+		target := v.(map[string]interface{})["target"].(string)
+		fmt.Println(ctrlAddr, source, target)
+		go coroutineInpc().run(ctrlAddr, source, target)
 	}
 }
 

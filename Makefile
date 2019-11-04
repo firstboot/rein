@@ -1,4 +1,5 @@
 # Go parameters
+# SHELL := cmd.exe
 GOCMD=go
 GOBUILD=$(GOCMD) build
 GOCLEAN=$(GOCMD) clean
@@ -7,7 +8,7 @@ GOGET=$(GOCMD) get
 SRC=./src/
 BINARY_DIR=./bin/
 
-BINARY_NAME=rein-1.0.3
+BINARY_NAME=rein-1.0.5
 BINARY_NAME_POSTFIX=.exe
 BINARY_WIN=$(BINARY_NAME)-amd64-win.exe
 BINARY_MAC=$(BINARY_NAME)-amd64-mac.dmg
@@ -20,9 +21,10 @@ test: clean build run
 build:
 		$(GOBUILD) -o $(BINARY_DIR)$(BINARY_NAME)$(BINARY_NAME_POSTFIX) -v $(SRC)
 clean:
-		rm -f $(BINARY_DIR)*
-run:
+		rm -rf $(BINARY_DIR)*
+run1:
 		#$(GOBUILD) -o $(BINARY_DIR)$(BINARY_NAME)$(BINARY_NAME_POSTFIX) -v $(SRC)
+run:
 		$(BINARY_DIR)$(BINARY_NAME)$(BINARY_NAME_POSTFIX)
 deps:
 		#$(GOGET) github.com/markbates/goth
