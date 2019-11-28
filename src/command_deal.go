@@ -104,6 +104,50 @@ func (obj commandDealObj) confInnerDeal(confMap map[string]interface{}) {
 	if utilsConf().isExistKeyOfMap("inpc", confMap) == true {
 		obj.modelInpcDeal(confMap)
 	}
+
+	if utilsConf().isExistKeyOfMap("inpcc", confMap) == true {
+		obj.modelInpccDeal(confMap)
+	}
+
+	if utilsConf().isExistKeyOfMap("inpss", confMap) == true {
+		obj.modelInpssDeal(confMap)
+	}
+
+	if utilsConf().isExistKeyOfMap("inpcs", confMap) == true {
+		obj.modelInpcsDeal(confMap)
+	}
+}
+
+func (obj commandDealObj) modelInpcsDeal(confMap map[string]interface{}) {
+	for k, v := range confMap["inpcs"].([]interface{}) {
+		// fmt.Println(k, v.(map[string]interface{})["source"], v.(map[string]interface{})["target"])
+		fmt.Println(k, v)
+		ctrlAddr := v.(map[string]interface{})["ctrl"].(string)
+		fmt.Println(ctrlAddr)
+		go coroutineInpcs().run(ctrlAddr)
+	}
+}
+
+func (obj commandDealObj) modelInpssDeal(confMap map[string]interface{}) {
+	for k, v := range confMap["inpss"].([]interface{}) {
+		// fmt.Println(k, v.(map[string]interface{})["source"], v.(map[string]interface{})["target"])
+		fmt.Println(k, v)
+		ctrlAddr := v.(map[string]interface{})["ctrl"].(string)
+		fmt.Println(ctrlAddr)
+		go coroutineInpss().run(ctrlAddr)
+	}
+}
+
+func (obj commandDealObj) modelInpccDeal(confMap map[string]interface{}) {
+	for k, v := range confMap["inpcc"].([]interface{}) {
+		// fmt.Println(k, v.(map[string]interface{})["source"], v.(map[string]interface{})["target"])
+		fmt.Println(k, v)
+		ctrlAddr := v.(map[string]interface{})["ctrl"].(string)
+		source := v.(map[string]interface{})["source"].(string)
+		target := v.(map[string]interface{})["target"].(string)
+		fmt.Println(ctrlAddr, source, target)
+		go coroutineInpc().run(ctrlAddr, source, target)
+	}
 }
 
 func (obj commandDealObj) modelInpsDeal(confMap map[string]interface{}) {
