@@ -10,6 +10,7 @@ type appInfoObj struct {
 	exampleDetailFileshareInfo string
 	exampleDetailInpsInfo      string
 	exampleDetailInpcInfo      string
+	inpqDetail                 string
 }
 
 func appInfo() appInfoObj {
@@ -67,12 +68,19 @@ func appInfo() appInfoObj {
 -e-detail-upstream:  upstream mode conf example
 -e-detail-inps:      inps mode conf example
 -e-detail-inpc:      inpc mode conf example
--e-detail-fileshare: fileshare conf example`
+-e-detail-fileshare: fileshare conf example
+-inpq:               query inps or inpss, get source/target pairs
+-inpq-detail:        inpq example`
 
 	const aboutInfo = `author:  lz
 e-mail:  linzhanggeorge@gmail.com
 index:   https://github.com/firstboot/rein
 help:    -h`
+
+	const inpqDetail = `query inps or inpss, get source/target pairs.
+eg:  
+    ./rein -inpq x.x.x.x:17500
+`
 
 	return appInfoObj{
 		exampleInfo,
@@ -83,6 +91,7 @@ help:    -h`
 		exampleDetailUpstreamInfo,
 		exampleDetailFileshareInfo,
 		exampleDetailInpsInfo,
-		exampleDetailInpcInfo}
+		exampleDetailInpcInfo,
+		inpqDetail}
 
 }

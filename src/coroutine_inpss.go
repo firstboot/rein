@@ -174,7 +174,7 @@ func (obj coroutineInpssObj) run(ctrlAddr string) {
 	leftConns := []net.Conn{}
 	leftConnTexts := []string{}
 	rightConns := []net.Conn{}
-	// rightConnTexts := []string{}
+	inpccConnPairs := make(map[string]int)
 
 	for {
 		log.Println("wait for ctrlServConn link in ...")
@@ -183,10 +183,21 @@ func (obj coroutineInpssObj) run(ctrlAddr string) {
 		msg := obj.connRecvDealOnce(ctrlServConn, obj.bufferLen)
 		log.Println("connRecvDealOnce link in ok ...")
 
+		if msg == "inpq" {
+			for key, ele := range inpccConnPairs {
+				log.Println("inpq: ", key, ", ", ele)
+				ctrlServConn.Write([]byte(key + "\n"))
+			}
+			ctrlServConn.Close()
+			continue
+		}
+
 		if len(msg) >= 6 && msg[:7] == "0.0.0.0" {
 			leftConns = append(leftConns, ctrlServConn)
 			log.Println("leftConn: ", fmt.Sprintf("%0x", &ctrlServConn))
-			sourceAddr := msg
+			inpccConnPairs[msg] = 0
+			pos := strings.Index(msg, "/")
+			sourceAddr := msg[:pos]
 			leftConnTexts = append(leftConnTexts, sourceAddr)
 		}
 

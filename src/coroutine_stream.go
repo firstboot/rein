@@ -98,6 +98,7 @@ func (obj coroutineStreamObj) consumerDeal(orgiConn net.Conn, clientConn *net.TC
 	for {
 		ce := <-channel
 		strLen := strconv.Itoa(strings.Count(ce.bf, ""))
+		log.Println("flag: ", strconv.Itoa(ce.flag), " n: ", strconv.Itoa(ce.n), " buffers: ", strLen, " text: ", ce.bf)
 		log.Println("flag: ", strconv.Itoa(ce.flag), " n: ", strconv.Itoa(ce.n), " buffers: ", strLen)
 		if ce.flag == 0 {
 			clientConn.Write([]byte(ce.bf))

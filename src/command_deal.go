@@ -71,11 +71,31 @@ func (obj commandDealObj) parse(args []string) {
 	}
 
 	if args[1] == "-c" {
+		if len(args) != 3 {
+			fmt.Println("error: incorrect number of arguments!")
+			os.Exit(0)
+		}
 		confPath := args[2]
 		commandDealConfPath = confPath
 		confMap := utilsConf().getConf(confPath)
 		obj.confInnerDeal(confMap)
 		return
+	}
+
+	if args[1] == "-inpq" {
+		if len(args) != 3 {
+			fmt.Println("error: incorrect number of arguments!")
+			os.Exit(0)
+		}
+		inpsAddr := args[2]
+		coroutineInpq().run(inpsAddr)
+		return
+	}
+
+	if args[1] == "-inpq-detail" {
+		text := appInfo().inpqDetail
+		fmt.Println(text)
+		os.Exit(0)
 	}
 
 }

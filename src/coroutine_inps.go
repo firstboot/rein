@@ -179,14 +179,28 @@ func (obj coroutineInpsObj) communicationDeal(userServConn net.Conn, bufferLen i
 func (obj coroutineInpsObj) run(ctrlAddr string) {
 
 	ctrlServLis := obj.serverListen(ctrlAddr)
+	inpccConnPairs := make(map[string]int)
 
 	for {
 		log.Println("wait for ctrlServConn link in ...")
 		ctrlServConn := obj.serverAccept(ctrlServLis) // block
 		log.Println("ctrlServConn link in ok ...")
-		sourceAddr := obj.connRecvDealOnce(ctrlServConn, obj.bufferLen)
+		msg := obj.connRecvDealOnce(ctrlServConn, obj.bufferLen)
 		log.Println("connRecvDealOnce link in ok ...")
 
+		// supoort inpq
+		inpccConnPairs[msg] = 0
+		if msg == "inpq" {
+			for key, ele := range inpccConnPairs {
+				log.Println("inpq: ", key, ", ", ele)
+				ctrlServConn.Write([]byte(key + "\n"))
+			}
+			ctrlServConn.Close()
+			continue
+		}
+
+		pos := strings.Index(msg, "/")
+		sourceAddr := msg[:pos]
 		userServLis := obj.serverListen(sourceAddr) // proxy server source
 
 		go func() {

@@ -172,7 +172,8 @@ func (obj coroutineInpcObj) run(ctrlAddr string, sourceAddr string, targetAddr s
 
 	for {
 		ctrlCliConn := obj.getClientConn(ctrlAddr)
-		ctrlCliConn.Write([]byte(sourceAddr))
+		// ctrlCliConn.Write([]byte(sourceAddr))
+		ctrlCliConn.Write([]byte(sourceAddr + "/" + targetAddr))
 		cmd := obj.connRecvDealOnce(ctrlCliConn, obj.bufferLen)
 		if cmd == "ok" {
 			log.Printf("ctrlCliConn recv ok ...")
