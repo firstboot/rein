@@ -98,6 +98,10 @@ func (obj commandDealObj) parse(args []string) {
 		os.Exit(0)
 	}
 
+	fmt.Println("error: incorrect arguments!")
+	infoStr := appInfo().aboutInfo
+	fmt.Println(infoStr)
+	os.Exit(0)
 }
 
 func (obj commandDealObj) confInnerDeal(confMap map[string]interface{}) {
