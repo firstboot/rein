@@ -8,6 +8,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
 // channel element struct
@@ -179,6 +180,9 @@ func (obj coroutineInpcsObj) communicationDeal(userServConn net.Conn, bufferLen 
 func (obj coroutineInpcsObj) run(ctrlAddr string) {
 
 	for {
+
+		runFlag := true
+
 		fmt.Println("new cycle ...")
 		ctrlClientConn := obj.getClientConn(ctrlAddr)
 		ctrlClientConn.Write([]byte("inpcs"))
@@ -193,15 +197,25 @@ func (obj coroutineInpcsObj) run(ctrlAddr string) {
 
 		userServLis := obj.serverListen(sourceAddr) // proxy server source
 		fmt.Println("1")
+
 		go func() {
 			obj.acceptDeal(userServLis, ctrlClientConn) // block
 			userServLis.Close()
 			ctrlClientConn.Close()
+			runFlag = false
 		}()
 
 		fmt.Println("botton")
 
 		// time.Sleep(time.Second * 3)
+
+		for {
+			fmt.Println("runFlag :", runFlag)
+			time.Sleep(time.Second * 1)
+			if runFlag == false {
+				break
+			}
+		}
 
 	}
 
