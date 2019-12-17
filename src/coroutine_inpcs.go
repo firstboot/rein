@@ -207,10 +207,8 @@ func (obj coroutineInpcsObj) run(ctrlAddr string) {
 
 		fmt.Println("botton")
 
-		// time.Sleep(time.Second * 3)
-
 		for {
-			fmt.Println("runFlag :", runFlag)
+			// fmt.Println("runFlag :", runFlag)
 			time.Sleep(time.Second * 1)
 			if runFlag == false {
 				break

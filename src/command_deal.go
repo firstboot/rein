@@ -170,7 +170,7 @@ func (obj commandDealObj) modelInpccDeal(confMap map[string]interface{}) {
 		source := v.(map[string]interface{})["source"].(string)
 		target := v.(map[string]interface{})["target"].(string)
 		fmt.Println(ctrlAddr, source, target)
-		go coroutineInpc().run(ctrlAddr, source, target)
+		go coroutineInpcc().run(ctrlAddr, source, target)
 	}
 }
 

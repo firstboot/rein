@@ -176,6 +176,8 @@ func (obj coroutineInpssObj) run(ctrlAddr string) {
 	rightConns := []net.Conn{}
 	inpccConnPairs := make(map[string]int)
 
+	var inpccCtrlConn net.Conn
+
 	for {
 		log.Println("wait for ctrlServConn link in ...")
 		ctrlServConn := obj.serverAccept(ctrlServLis) // block
@@ -189,6 +191,12 @@ func (obj coroutineInpssObj) run(ctrlAddr string) {
 				ctrlServConn.Write([]byte(key + "\n"))
 			}
 			ctrlServConn.Close()
+			continue
+		}
+
+		if msg == "inpcc" {
+			inpccCtrlConn = ctrlServConn
+			log.Println("inpccCtrlConn: ", fmt.Sprintf("%0x", &inpccCtrlConn))
 			continue
 		}
 
@@ -233,6 +241,10 @@ func (obj coroutineInpssObj) run(ctrlAddr string) {
 				rightConns = rightConns[i+1:]
 			}
 
+		}
+
+		if len(leftConns) == 0 && len(rightConns) > 0 {
+			inpccCtrlConn.Write([]byte("new"))
 		}
 
 		fmt.Println("after len(leftConns): ", len(leftConns), ", len(rightConns): ", len(rightConns))
