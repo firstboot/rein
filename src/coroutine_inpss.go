@@ -177,6 +177,7 @@ func (obj coroutineInpssObj) run(ctrlAddr string) {
 	inpccConnPairs := make(map[string]int)
 
 	var inpccCtrlConn net.Conn
+	// var inpcsCtrlConn net.Conn
 
 	for {
 		log.Println("wait for ctrlServConn link in ...")
@@ -194,11 +195,17 @@ func (obj coroutineInpssObj) run(ctrlAddr string) {
 			continue
 		}
 
-		if msg == "inpcc" {
+		if msg == "inpcc-ctrl" {
 			inpccCtrlConn = ctrlServConn
 			log.Println("inpccCtrlConn: ", fmt.Sprintf("%0x", &inpccCtrlConn))
 			continue
 		}
+
+		// if msg == "inpcs-ctrl" {
+		// 	inpcsCtrlConn = ctrlServConn
+		// 	log.Println("inpcsCtrlConn: ", fmt.Sprintf("%0x", &inpcsCtrlConn))
+		// 	continue
+		// }
 
 		if len(msg) >= 6 && msg[:7] == "0.0.0.0" {
 			leftConns = append(leftConns, ctrlServConn)

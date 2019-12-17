@@ -74,7 +74,7 @@ func (obj coroutineInpcsObj) connRecvDealOnce(conn net.Conn, bufferLen int) stri
 
 func (obj coroutineInpcsObj) acceptDealEx(userServLis net.Listener, ctrlServConn net.Conn, bufferLen int) {
 	var firstRunFlag = false
-	// for {
+
 	log.Println("userServLis.Accept ...")
 	conn, err := userServLis.Accept()
 	if err != nil {
@@ -88,7 +88,6 @@ func (obj coroutineInpcsObj) acceptDealEx(userServLis net.Listener, ctrlServConn
 	}
 	log.Println("userServLis.Accept ok!, conn id: ", fmt.Sprintf("%0x", &conn))
 	obj.communicationDeal(conn, bufferLen, ctrlServConn)
-	// }
 }
 
 func (obj coroutineInpcsObj) acceptDeal(userServLis net.Listener, ctrlServConn net.Conn) {
@@ -179,6 +178,8 @@ func (obj coroutineInpcsObj) communicationDeal(userServConn net.Conn, bufferLen 
 
 func (obj coroutineInpcsObj) run(ctrlAddr string) {
 
+	log.Println("rein inpcs start...")
+
 	for {
 
 		runFlag := true
@@ -214,7 +215,6 @@ func (obj coroutineInpcsObj) run(ctrlAddr string) {
 				break
 			}
 		}
-
 	}
 
 }

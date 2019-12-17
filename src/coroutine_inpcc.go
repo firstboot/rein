@@ -174,7 +174,7 @@ func (obj coroutineInpccObj) run(ctrlAddr string, sourceAddr string, targetAddr 
 
 	// inpcc control signal
 	inpccCtrlConn := obj.getClientConn(ctrlAddr)
-	inpccCtrlConn.Write([]byte("inpcc"))
+	inpccCtrlConn.Write([]byte("inpcc-ctrl"))
 
 	for {
 
@@ -197,6 +197,10 @@ func (obj coroutineInpccObj) run(ctrlAddr string, sourceAddr string, targetAddr 
 			msg := obj.connRecvDealOnce(inpccCtrlConn, obj.bufferLen)
 			if msg == "new" {
 				break
+			}
+
+			if msg == "" {
+				os.Exit(1)
 			}
 			time.Sleep(time.Second * 1)
 		}
