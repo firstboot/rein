@@ -8,7 +8,6 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	"time"
 )
 
 // channel element struct
@@ -176,13 +175,11 @@ func (obj coroutineInpcsObj) communicationDeal(userServConn net.Conn, bufferLen 
 	obj.consumerDeal(userServConn, ctrlServConn, channel)
 }
 
-func (obj coroutineInpcsObj) run(ctrlAddr string) {
-
-	log.Println("rein inpcs start...")
+func (obj coroutineInpcsObj) execute(ctrlAddr string) {
 
 	for {
-
-		runFlag := true
+		// var userServLis net.Listener
+		// runFlag := true
 
 		fmt.Println("new cycle ...")
 		ctrlClientConn := obj.getClientConn(ctrlAddr)
@@ -199,22 +196,62 @@ func (obj coroutineInpcsObj) run(ctrlAddr string) {
 		userServLis := obj.serverListen(sourceAddr) // proxy server source
 		fmt.Println("1")
 
-		go func() {
-			obj.acceptDeal(userServLis, ctrlClientConn) // block
-			userServLis.Close()
-			ctrlClientConn.Close()
-			runFlag = false
-		}()
+		// go func() {
+		// 	obj.acceptDeal(userServLis, ctrlClientConn) // block
+		// 	userServLis.Close()
+		// 	ctrlClientConn.Close()
+		// 	runFlag = false
+		// 	fmt.Println("go func botton")
+		// }()
 
-		fmt.Println("botton")
+		// fmt.Println("botton")
 
-		for {
-			// fmt.Println("runFlag :", runFlag)
-			time.Sleep(time.Second * 1)
-			if runFlag == false {
-				break
-			}
+		///////////////////////////
+
+		obj.acceptDeal(userServLis, ctrlClientConn) // block
+		userServLis.Close()
+		ctrlClientConn.Close()
+
+		// runFlag = false
+
+		////////////////////////
+
+		// for {
+		// 	// fmt.Println("runFlag :", runFlag)
+		// 	time.Sleep(time.Second * 1)
+		// 	if runFlag == false {
+		// 		break
+		// 	}
+		// }
+
+		// for {
+		// 	msg := obj.connRecvDealOnce(inpcsCtrlConn, obj.bufferLen)
+		// 	if msg == "new" {
+		// 		// userServLis.Close()
+		// 		break
+		// 	}
+
+		// 	if msg == "" {
+		// 		// os.Exit(1)
+		// 		// userServLis.Close()
+		// 		break
+		// 	}
+		// 	time.Sleep(time.Second * 1)
+		// }
+	}
+}
+
+func (obj coroutineInpcsObj) run(ctrlAddr string) {
+	log.Println("rein inpcs start...")
+	// inpcs control signal
+	inpcsCtrlConn := obj.getClientConn(ctrlAddr)
+	inpcsCtrlConn.Write([]byte("inpcs-ctrl"))
+
+	for {
+		go obj.execute(ctrlAddr)
+		msg := obj.connRecvDealOnce(inpcsCtrlConn, obj.bufferLen)
+		if msg == "new" {
+			continue
 		}
 	}
-
 }

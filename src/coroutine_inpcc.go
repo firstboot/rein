@@ -8,7 +8,6 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	"time"
 )
 
 // channel element struct
@@ -30,13 +29,15 @@ func (obj coroutineInpccObj) getClientConn(destServer string) *net.TCPConn {
 	tcpAddr, err := net.ResolveTCPAddr("tcp4", destServer)
 	if err != nil {
 		log.Println(fmt.Fprintf(os.Stderr, "Fatal error: %s", err.Error()))
-		os.Exit(1)
+		// os.Exit(1)
+		return nil
 	}
 
 	conn, err := net.DialTCP("tcp", nil, tcpAddr)
 	if err != nil {
 		log.Println(fmt.Fprintf(os.Stderr, "Fatal error: %s", err.Error()))
-		os.Exit(1)
+		// os.Exit(1)
+		return nil
 	}
 	log.Println("getClientConn ok")
 	return conn
@@ -49,7 +50,7 @@ func (obj coroutineInpccObj) connRecvDealOnce(conn *net.TCPConn, bufferLen int) 
 
 	if err == io.EOF {
 		conn.Close()
-		log.Println("conn:", fmt.Sprintf("%0x", &conn), " close.")
+		log.Println("connRecvDealOnce conn:", fmt.Sprintf("%0x", &conn), " close.")
 		return ""
 	}
 
@@ -89,7 +90,8 @@ func (obj coroutineInpccObj) serverListen(servAddr string) net.Listener {
 	netListen, err := net.Listen("tcp", servAddr)
 	if err != nil {
 		log.Println("rein inps net.Listen error!")
-		os.Exit(1)
+		// os.Exit(1)
+		return nil
 	}
 	return netListen
 }
@@ -172,9 +174,10 @@ func (obj coroutineInpccObj) communicationDeal(ctrlCliConn *net.TCPConn, bufferL
 func (obj coroutineInpccObj) run(ctrlAddr string, sourceAddr string, targetAddr string) {
 	log.Println("rein inpcc start...")
 
-	// inpcc control signal
-	inpccCtrlConn := obj.getClientConn(ctrlAddr)
-	inpccCtrlConn.Write([]byte("inpcc-ctrl"))
+	// // inpcc control signal
+	// inpccCtrlConn := obj.getClientConn(ctrlAddr)
+	// log.Printf("inpccCtrlConn getClientConn ok ...")
+	// inpccCtrlConn.Write([]byte("inpcc-ctrl"))
 
 	for {
 
@@ -190,20 +193,21 @@ func (obj coroutineInpccObj) run(ctrlAddr string, sourceAddr string, targetAddr 
 		fmt.Println("connect proxy server target ... ok")
 		userCliConn := obj.getClientConn(targetAddr) // proxy server target
 
-		go obj.acceptDeal(ctrlCliConn, userCliConn) // block
+		obj.acceptDeal(ctrlCliConn, userCliConn) // block
 		log.Println("accept after ...")
 
-		for {
-			msg := obj.connRecvDealOnce(inpccCtrlConn, obj.bufferLen)
-			if msg == "new" {
-				break
-			}
+		// for {
+		// 	msg := obj.connRecvDealOnce(inpccCtrlConn, obj.bufferLen)
+		// 	if msg == "new" {
+		// 		break
+		// 	}
 
-			if msg == "" {
-				os.Exit(1)
-			}
-			time.Sleep(time.Second * 1)
-		}
+		// 	if msg == "" {
+		// 		// os.Exit(1)
+		// 		break
+		// 	}
+		// 	time.Sleep(time.Second * 1)
+		// }
 	}
 
 	// for {
