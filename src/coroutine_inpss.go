@@ -204,6 +204,27 @@ func (obj coroutineInpssObj) run(ctrlAddr string) {
 		if msg == "inpcs-ctrl" {
 			inpcsCtrlConn = ctrlServConn
 			log.Println("inpcsCtrlConn: ", fmt.Sprintf("%0x", &inpcsCtrlConn))
+			fmt.Println("inpcsCtrlConn:  len(leftConns): ", len(leftConns), ", len(rightConns): ", len(rightConns))
+
+			if len(leftConns) > 0 && len(rightConns) == 0 {
+				// send leftConnNum(inpcc conn num) to inpcsCtrlConn
+				leftConnNumStr := strconv.Itoa(len(leftConns))
+				inpcsCtrlConn.Write([]byte("leftConnNum:" + leftConnNumStr))
+				continue
+			}
+
+			if len(leftConns) == 0 && len(rightConns) == 0 {
+				log.Println("len(leftConns) == 0 && len(rightConns) == 0   aa")
+				if inpccCtrlConn != nil {
+					log.Println("len(leftConns) == 0 && len(rightConns) == 0  bb")
+					inpccCtrlConn.Write([]byte("new"))
+
+					inpcsCtrlConn.Write([]byte("reboot"))
+					inpcsCtrlConn.Close()
+				}
+				continue
+			}
+
 			continue
 		}
 
@@ -250,19 +271,19 @@ func (obj coroutineInpssObj) run(ctrlAddr string) {
 
 		}
 
-		if len(leftConns) == 0 && len(rightConns) > 0 {
-			if inpccCtrlConn != nil {
-				inpccCtrlConn.Write([]byte("new"))
-			}
-		}
+		// if len(leftConns) == 0 && len(rightConns) > 0 {
+		// 	if inpccCtrlConn != nil {
+		// 		inpccCtrlConn.Write([]byte("new"))
+		// 	}
+		// }
 
-		if len(leftConns) > 0 && len(rightConns) == 0 {
-			if inpcsCtrlConn != nil {
-				for i := 0; i < len(leftConns); i++ {
-					inpcsCtrlConn.Write([]byte("new"))
-				}
-			}
-		}
+		// if len(leftConns) > 0 && len(rightConns) == 0 {
+		// 	if inpcsCtrlConn != nil {
+		// 		for i := 0; i < len(leftConns); i++ {
+		// 			inpcsCtrlConn.Write([]byte("new"))
+		// 		}
+		// 	}
+		// }
 
 		fmt.Println("after len(leftConns): ", len(leftConns), ", len(rightConns): ", len(rightConns))
 	}

@@ -171,13 +171,7 @@ func (obj coroutineInpccObj) communicationDeal(ctrlCliConn *net.TCPConn, bufferL
 	obj.consumerDeal(ctrlCliConn, userCliConn, channel)
 }
 
-func (obj coroutineInpccObj) run(ctrlAddr string, sourceAddr string, targetAddr string) {
-	log.Println("rein inpcc start...")
-
-	// // inpcc control signal
-	// inpccCtrlConn := obj.getClientConn(ctrlAddr)
-	// log.Printf("inpccCtrlConn getClientConn ok ...")
-	// inpccCtrlConn.Write([]byte("inpcc-ctrl"))
+func (obj coroutineInpccObj) execute(ctrlAddr string, sourceAddr string, targetAddr string) {
 
 	for {
 
@@ -215,4 +209,52 @@ func (obj coroutineInpccObj) run(ctrlAddr string, sourceAddr string, targetAddr 
 	// 	fmt.Println("userCliConn:", fmt.Sprintf("%0x", &userCliConn))
 	// 	time.Sleep(time.Second * 1)
 	// }
+}
+
+func (obj coroutineInpccObj) run(confMap map[string]interface{}) {
+
+	log.Println("rein inpcc start...")
+
+	ctrlMapPair := make(map[string]int)
+	stMapPair := make(map[string]string)
+
+	for k, v := range confMap["inpcc"].([]interface{}) {
+		fmt.Println(k, v)
+		ctrlAddr := v.(map[string]interface{})["ctrl"].(string)
+		source := v.(map[string]interface{})["source"].(string)
+		target := v.(map[string]interface{})["target"].(string)
+		fmt.Println(ctrlAddr, source, target)
+		ctrlMapPair[ctrlAddr] = 0
+		stMapPair[source+"/"+target] = ctrlAddr
+		// go obj.execute(ctrlAddr, source, target)
+	}
+
+	for kCtrlAddr, ele := range ctrlMapPair {
+		fmt.Println(kCtrlAddr, " = ", ele)
+		// inpcs control signal
+		inpccCtrlConn := obj.getClientConn(kCtrlAddr)
+		inpccCtrlConn.Write([]byte("inpcc-ctrl"))
+
+		go func() {
+			for {
+				for kSt, ele := range stMapPair {
+					fmt.Println(kSt, " = ", ele)
+					pos := strings.Index(kSt, "/")
+					source := kSt[:pos]
+					target := kSt[pos+1:]
+					ctrlAddr := ele
+					go obj.execute(ctrlAddr, source, target)
+				}
+
+				msg := obj.connRecvDealOnce(inpccCtrlConn, obj.bufferLen)
+				if msg == "new" {
+					continue
+				}
+
+				if msg == "" {
+					break
+				}
+			}
+		}()
+	}
 }

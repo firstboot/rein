@@ -8,6 +8,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
 // channel element struct
@@ -45,7 +46,6 @@ func (obj coroutineInpcsObj) serverListen(servAddr string) net.Listener {
 		netListen, err = net.Listen("tcp", servAddr)
 		if err != nil {
 			log.Println("rein Inpcs net.Listen error!", err)
-			netListen.Close()
 			netListen = nil
 			// os.Exit(1)
 		} else {
@@ -62,12 +62,12 @@ func (obj coroutineInpcsObj) connRecvDealOnce(conn net.Conn, bufferLen int) stri
 
 	if err == io.EOF {
 		conn.Close()
-		log.Println("conn:", fmt.Sprintf("%0x", &conn), " close.")
+		log.Println("connRecvDealOnce conn:", fmt.Sprintf("%0x", &conn), " close.")
 		return ""
 	}
 
 	bufferStr := string(buffer[:n])
-	log.Println("conn:", fmt.Sprintf("%0x", &conn), len(bufferStr), " recv: ", bufferStr)
+	log.Println("connRecvDealOnce conn:", fmt.Sprintf("%0x", &conn), len(bufferStr), " recv: ", bufferStr)
 	return bufferStr
 }
 
@@ -187,13 +187,15 @@ func (obj coroutineInpcsObj) execute(ctrlAddr string) {
 		fmt.Println("connRecvDealOnce wait ...")
 		sourceAddr := obj.connRecvDealOnce(ctrlClientConn, obj.bufferLen)
 		fmt.Println("connRecvDealOnce ok ...")
-
 		// error pair
 		if sourceAddr == "exit" {
 			continue
 		}
 
 		userServLis := obj.serverListen(sourceAddr) // proxy server source
+		if userServLis == nil {
+			break
+		}
 		fmt.Println("1")
 
 		// go func() {
@@ -243,15 +245,33 @@ func (obj coroutineInpcsObj) execute(ctrlAddr string) {
 
 func (obj coroutineInpcsObj) run(ctrlAddr string) {
 	log.Println("rein inpcs start...")
-	// inpcs control signal
-	inpcsCtrlConn := obj.getClientConn(ctrlAddr)
-	inpcsCtrlConn.Write([]byte("inpcs-ctrl"))
 
 	for {
-		go obj.execute(ctrlAddr)
-		msg := obj.connRecvDealOnce(inpcsCtrlConn, obj.bufferLen)
-		if msg == "new" {
-			continue
+		// inpcs control signal
+		inpcsCtrlConn := obj.getClientConn(ctrlAddr)
+		inpcsCtrlConn.Write([]byte("inpcs-ctrl"))
+
+		for {
+			msg := obj.connRecvDealOnce(inpcsCtrlConn, obj.bufferLen)
+			if len(msg) >= 10 && msg[:11] == "leftConnNum" {
+				leftConnNum := msg[12:]
+				num, _ := strconv.Atoi(leftConnNum)
+				log.Println("rein inpcs leftConnNum = ", num)
+				for i := 0; i < num; i++ {
+					go obj.execute(ctrlAddr)
+				}
+			}
+			if msg == "" {
+				inpcsCtrlConn.Close()
+				time.Sleep(time.Second * 3)
+				break
+			}
+
+			if msg == "reboot" {
+				inpcsCtrlConn.Close()
+				time.Sleep(time.Second * 3)
+				break
+			}
 		}
 	}
 }

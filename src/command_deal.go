@@ -163,15 +163,7 @@ func (obj commandDealObj) modelInpssDeal(confMap map[string]interface{}) {
 }
 
 func (obj commandDealObj) modelInpccDeal(confMap map[string]interface{}) {
-	for k, v := range confMap["inpcc"].([]interface{}) {
-		// fmt.Println(k, v.(map[string]interface{})["source"], v.(map[string]interface{})["target"])
-		fmt.Println(k, v)
-		ctrlAddr := v.(map[string]interface{})["ctrl"].(string)
-		source := v.(map[string]interface{})["source"].(string)
-		target := v.(map[string]interface{})["target"].(string)
-		fmt.Println(ctrlAddr, source, target)
-		go coroutineInpcc().run(ctrlAddr, source, target)
-	}
+	go coroutineInpcc().run(confMap)
 }
 
 func (obj commandDealObj) modelInpsDeal(confMap map[string]interface{}) {
