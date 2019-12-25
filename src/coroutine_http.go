@@ -8,6 +8,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"./netopt"
 )
 
 // channel element struct
@@ -200,7 +202,7 @@ func (obj coroutineHTTPObj) routeByRequestURL(headerContext string) (string, *ne
 	log.Println("req.body: \n" + protocolParser().setHTTPRequestHeader(req))
 	// log.Println("######################")
 
-	clientConn := coroutineStream().getClientConn(destServerAddr)
+	clientConn := netopt.NetGetClientConn(destServerAddr)
 	log.Println("routeByRequestURL - clientConn:", fmt.Sprintf("%0x", &clientConn))
 	return protocolParser().setHTTPRequestHeader(req), clientConn
 }

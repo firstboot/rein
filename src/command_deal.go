@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
 )
 
@@ -117,9 +116,9 @@ func (obj commandDealObj) confInnerDeal(confMap map[string]interface{}) {
 		obj.modelHTTPDeal(confMap)
 	}
 
-	if utilsConf().isExistKeyOfMap("system", confMap) == true {
-		obj.systemConfDeal(confMap)
-	}
+	// if utilsConf().isExistKeyOfMap("system", confMap) == true {
+	// 	obj.systemConfDeal(confMap)
+	// }
 
 	if utilsConf().isExistKeyOfMap("inps", confMap) == true {
 		obj.modelInpsDeal(confMap)
@@ -188,16 +187,16 @@ func (obj commandDealObj) modelInpcDeal(confMap map[string]interface{}) {
 	}
 }
 
-func (obj commandDealObj) systemConfDeal(confMap map[string]interface{}) {
-	systemMap := confMap["system"]
-	port := systemMap.(map[string]interface{})["port"].(string)
-	obj.sysServPort = port
-	username := systemMap.(map[string]interface{})["username"].(string)
-	password := systemMap.(map[string]interface{})["password"].(string)
-	log.Println(port, username, password)
-	go httpServer(port, username, password).run()
+// func (obj commandDealObj) systemConfDeal(confMap map[string]interface{}) {
+// 	systemMap := confMap["system"]
+// 	port := systemMap.(map[string]interface{})["port"].(string)
+// 	obj.sysServPort = port
+// 	username := systemMap.(map[string]interface{})["username"].(string)
+// 	password := systemMap.(map[string]interface{})["password"].(string)
+// 	log.Println(port, username, password)
+// 	go httpServer(port, username, password).run()
 
-}
+// }
 
 func (obj commandDealObj) modelFileShareDeal(confMap map[string]interface{}) {
 	for k, v := range confMap["fileshare"].([]interface{}) {
