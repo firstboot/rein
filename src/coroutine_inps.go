@@ -14,7 +14,7 @@ type coroutineInpsObj struct {
 }
 
 func coroutineInps() coroutineInpsObj {
-	return coroutineInpsObj{10240}
+	return coroutineInpsObj{2048}
 }
 
 func (obj coroutineInpsObj) acceptDealEx(userServLis net.Listener, ctrlServConn net.Conn, bufferLen int) {
@@ -107,6 +107,7 @@ func (obj coroutineInpsObj) run(ctrlAddr string) {
 		// inpccConnPairs[sourceAddr] = targetAddr
 		// cliConnPairs[msg] = ctrlServConn
 
+		//
 		userBackupLis, userLisErr := lisPairs[sourceAddr]
 		var userServLis net.Listener
 		if false == userLisErr {

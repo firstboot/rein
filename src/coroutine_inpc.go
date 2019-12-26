@@ -15,7 +15,7 @@ type coroutineInpcObj struct {
 }
 
 func coroutineInpc() coroutineInpcObj {
-	return coroutineInpcObj{10240}
+	return coroutineInpcObj{2048}
 }
 
 func (obj coroutineInpcObj) acceptDealEx(ctrlCliConn *net.TCPConn, userCliConn *net.TCPConn, bufferLen int) {
@@ -31,7 +31,7 @@ func (obj coroutineInpcObj) communicationDeal(ctrlCliConn *net.TCPConn, bufferLe
 	channel := make(chan netopt.ChanEle)
 	go netopt.CliConnReadLeft(ctrlCliConn, bufferLen, channel)
 	go netopt.CliConnReadRight(userCliConn, bufferLen, channel)
-	netopt.CliCliConsumer(ctrlCliConn, userCliConn, channel)
+	go netopt.CliCliConsumer(ctrlCliConn, userCliConn, channel)
 }
 
 func (obj coroutineInpcObj) run(ctrlAddr string, sourceAddr string, targetAddr string) {
