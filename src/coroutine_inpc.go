@@ -1,8 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net"
+	"os"
+	"os/signal"
 
 	"./netopt"
 )
@@ -33,32 +36,52 @@ func (obj coroutineInpcObj) communicationDeal(ctrlCliConn *net.TCPConn, bufferLe
 
 func (obj coroutineInpcObj) run(ctrlAddr string, sourceAddr string, targetAddr string) {
 
-	for {
-		for {
-			ctrlCliConn := netopt.NetGetClientConn(ctrlAddr)
-			// ctrlCliConn.Write([]byte(sourceAddr))
-			ctrlCliConn.Write([]byte(sourceAddr + "/" + targetAddr))
-			cmd := netopt.NetConnRecvDealOnce(ctrlCliConn, obj.bufferLen)
-			if cmd == "ok" {
-				log.Printf("ctrlCliConn recv ok ...")
-			}
-			if cmd == "reboot" {
-				log.Printf("ctrlCliConn recv reboot ...")
-				break
-			}
+	ctrlConnLst := []*net.TCPConn{}
+	userConnLst := []*net.TCPConn{}
 
-			// time.Sleep(time.Second * 10)
-			// fmt.Printf("connect proxy server target ... ok")
-			userCliConn := netopt.NetGetClientConn(targetAddr) // proxy server target
+	go func() {
+		// status checker
+		ctrlCliConn := netopt.NetGetClientConn(ctrlAddr)
+		ctrlConnLst = append(ctrlConnLst, ctrlCliConn)
+		ctrlCliConn.Write([]byte("inpc_status:" + sourceAddr + "/" + targetAddr))
+		go netopt.NetCliConnEcho(ctrlCliConn)
 
-			obj.acceptDeal(ctrlCliConn, userCliConn) // go
-			log.Println("accept after ...")
+		// signal checker
+		c := make(chan os.Signal)
+		signal.Notify(c)
+		fmt.Println("start signal listen ...")
+		s := <-c
+		fmt.Println("check signal is ", s)
+		for _, conn := range ctrlConnLst {
+			log.Println("inpc: ", fmt.Sprintf("%0x", &conn), " close.")
+			conn.Close()
 		}
+
+		for _, conn := range userConnLst {
+			log.Println("inpc: ", fmt.Sprintf("%0x", &conn), " close.")
+			conn.Close()
+		}
+		os.Exit(1)
+	}()
+
+	for {
+		ctrlCliConn := netopt.NetGetClientConn(ctrlAddr)
+		// ctrlCliConn.Write([]byte(sourceAddr))
+		ctrlCliConn.Write([]byte(sourceAddr + "/" + targetAddr))
+		cmd := netopt.NetConnRecvDealOnce(ctrlCliConn, obj.bufferLen)
+		if cmd == "ok" {
+			log.Printf("ctrlCliConn recv ok ...")
+		}
+
+		// time.Sleep(time.Second * 10)
+		// fmt.Printf("connect proxy server target ... ok")
+		userCliConn := netopt.NetGetClientConn(targetAddr) // proxy server target
+
+		ctrlConnLst = append(ctrlConnLst, ctrlCliConn)
+		userConnLst = append(userConnLst, userCliConn)
+
+		obj.acceptDeal(ctrlCliConn, userCliConn) // go
+		// log.Println("accept after ...")
 	}
 
-	// for {
-	// 	fmt.Println("ctrlCliConn:", fmt.Sprintf("%0x", &ctrlCliConn))
-	// 	fmt.Println("userCliConn:", fmt.Sprintf("%0x", &userCliConn))
-	// 	time.Sleep(time.Second * 1)
-	// }
 }

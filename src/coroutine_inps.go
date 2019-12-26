@@ -50,9 +50,10 @@ func (obj coroutineInpsObj) communicationDeal(userServConn net.Conn, bufferLen i
 func (obj coroutineInpsObj) run(ctrlAddr string) {
 
 	ctrlServLis := netopt.NetServerListen(ctrlAddr)
-	inpccConnPairs := make(map[string]int)
+	// inpccConnPairs := make(map[string]string)
 
 	lisPairs := make(map[string]net.Listener)
+	cliStatusConnPairs := make(map[string]net.Conn)
 
 	for {
 		log.Println("wait for ctrlServConn link in ...")
@@ -64,12 +65,37 @@ func (obj coroutineInpsObj) run(ctrlAddr string) {
 
 		log.Println("connRecvDealOnce link in ok ...")
 
-		// supoort inpq
-		inpccConnPairs[msg] = 0
+		if len(msg) >= 11 && msg[:12] == "inpc_status:" {
+			msgAddr := msg[12:]
+			cliStatusConnPairs[msgAddr] = ctrlServConn
+			continue
+		}
+
 		if msg == "inpq" {
-			for key, ele := range inpccConnPairs {
-				log.Println("inpq: ", key, ", ", ele)
-				ctrlServConn.Write([]byte(key + "\n"))
+			// for key, ele := range inpccConnPairs {
+			// 	log.Println("inpq: ", key, ", ", ele)
+			// 	status := netopt.NetCheckClientConn(key)
+			// 	var statusStr string
+			// 	if true == status {
+			// 		statusStr = "running"
+			// 	} else {
+			// 		statusStr = "static"
+			// 	}
+			// 	ctrlServConn.Write([]byte(key + "/" + ele + "  " + statusStr + "\n"))
+
+			// }
+			// ctrlServConn.Close()
+
+			for key, ele := range cliStatusConnPairs {
+				// fmt.Println(key, fmt.Sprintf("%0x", &ele))
+				status := netopt.NetCheckClientPing(ele)
+				var statusStr string
+				if true == status {
+					statusStr = "online"
+				} else {
+					statusStr = "offline"
+				}
+				ctrlServConn.Write([]byte(key + ", " + statusStr + "\n"))
 			}
 			ctrlServConn.Close()
 			continue
@@ -77,6 +103,9 @@ func (obj coroutineInpsObj) run(ctrlAddr string) {
 
 		pos := strings.Index(msg, "/")
 		sourceAddr := msg[:pos]
+		// targetAddr := msg[pos+1:]
+		// inpccConnPairs[sourceAddr] = targetAddr
+		// cliConnPairs[msg] = ctrlServConn
 
 		userBackupLis, userLisErr := lisPairs[sourceAddr]
 		var userServLis net.Listener
