@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"net"
-	"os"
 	"time"
 
 	"./netopt"
@@ -47,13 +46,7 @@ func (obj coroutineStreamObj) communicationDeal(srvConn net.Conn, bufferLen int,
 func (obj coroutineStreamObj) run(sourceAddr string, targetAddr string) {
 	destServerAddr := targetAddr
 	log.Println("rein stream server start ...")
-
-	netListen, err := net.Listen("tcp", sourceAddr)
-	if err != nil {
-		log.Println("rein stream net.Listen error!")
-		os.Exit(1)
-	}
-
+	netListen := netopt.NetServerListen(sourceAddr)
 	log.Println("rein stream net.Listen ready...")
 	go obj.acceptDeal(netListen, destServerAddr)
 	log.Println("rein stream net.Listen start...")
