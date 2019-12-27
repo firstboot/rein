@@ -37,25 +37,26 @@
 
 ### 1. 根据你的操作系统下载指定可执行文件
 
-所有操作系统版本的压缩包下载网址:  https://note.youdao.com/ynoteshare1/index.html?id=e11547282e63ce5920c5c2755a5cd89a&type=note
+所有操作系统版本的压缩包下载网址:  https://github.com/firstboot/rein/releases
 
 #### 1.1 根据操作系统下载
 
-* *1.1.1  在 CentOS/RHEL/Ubuntu 平台下载*
+* *1.1.1  在 CentOS/RHEL/Ubuntu 平台下载（64位）*
 
 ```shell
 cd ~
 wget \
-http://note.youdao.com/yws/public/resource/e11547282e63ce5920c5c2755a5cd89a/xmlnote/18F3E51677BC41B3B1FE0F6B7DE359F5/27478 -O rein.zip
-unzip rein.zip
+https://github.com/firstboot/rein/releases/download/v1.0.6-bin/rein-1.0.6-amd64-linux.zip
+unzip rein-1.0.6-amd64-linux.zip
+mv rein-1.0.6-amd64-linux rein
 chmod +x rein
 ```
 
-* *1.1.2  在 Windows 平台下载*
+* *1.1.2  在 Windows 平台下载（64位）*
 
   * 打开浏览器，在地址栏输入下面的地址后下载
 
-    http://note.youdao.com/yws/public/resource/e11547282e63ce5920c5c2755a5cd89a/xmlnote/63FA93DEBA63475BA3DB18CB3574662B/27486
+    https://github.com/firstboot/rein/releases/download/v1.0.6-bin/rein-1.0.6-amd64-win.exe.zip
 
   * 解压压缩包 `rein-x.x.x-amd64-windows.zip`
 
@@ -249,5 +250,14 @@ chmod +x rein
   # 运行 rein
   ./rein -c rein.json
   ```
-
+  
+  * **inpq的使用（1.0.6版本及以上）**
+  
+  ```shell
+  # 通过 inpq 可以获取 inps 的连接状态
+  ./rein -inpq x.x.x.x:17500
+  0.0.0.0:9800/127.0.0.1:22, online
+  ```
+  
+  
 
