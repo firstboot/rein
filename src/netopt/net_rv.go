@@ -2,6 +2,7 @@ package netopt
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"net"
 	"strconv"
@@ -22,6 +23,15 @@ func SrvConnReadT(flag int, srvConn net.Conn, bufferLen int, channel chan<- Chan
 		ce := ChanEle{flag, n, string(buffer[:n])}
 		channel <- ce
 
+		if err == io.EOF {
+			log.Println("srvConn:", fmt.Sprintf("%0x", &srvConn), " EOF")
+			srvConn.Close()
+			log.Println("srvConn:", fmt.Sprintf("%0x", &srvConn), " close.")
+			ce := ChanEle{-1, 0, ""}
+			channel <- ce
+			return
+		}
+
 		if err != nil {
 			srvConn.Close()
 			log.Println("srvConn:", fmt.Sprintf("%0x", &srvConn), " close.")
@@ -38,6 +48,15 @@ func CliConnReadT(flag int, cliConn *net.TCPConn, bufferLen int, channel chan<- 
 		n, err := cliConn.Read(buffer)
 		ce := ChanEle{flag, n, string(buffer[:n])}
 		channel <- ce
+
+		if err == io.EOF {
+			log.Println("cliConn:", fmt.Sprintf("%0x", &cliConn), " EOF")
+			cliConn.Close()
+			log.Println("cliConn:", fmt.Sprintf("%0x", &cliConn), " close.")
+			ce := ChanEle{-1, 0, ""}
+			channel <- ce
+			return
+		}
 
 		if err != nil {
 			cliConn.Close()
